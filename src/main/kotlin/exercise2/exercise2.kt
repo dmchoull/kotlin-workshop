@@ -6,24 +6,32 @@ package exercise2
 // 🧠 define a lambda "add" that adds two integers
 // ℹ️ lambda syntax is: { arg1: Type, arg2: Type -> [body with last line as implicit return value] }
 
-val add = TODO("define the lambda expression here")
+val add = { a: Int, b: Int -> a + b }
 
 // 🧠 define a lambda "negate" that negates an integer
 
-
+val negate: (Int) -> Int = { -it }
 
 // 🧠 define a function "map" that takes two arguments: a List<Int> and a function of type (Int) -> Int.
 // It should return the list that results from applying the function to each element of the given list
 // ℹ️ You can call mutableListOf<Int>() to create an empty list that is ready to have things added to it
 
-
+fun map(list: List<Int>, fn: (Int) -> Int): List<Int> {
+    val mappedList = mutableListOf<Int>()
+    for (element in list) {
+        mappedList.add(fn(element))
+    }
+    return mappedList
+}
 
 // 🧠 define a function "addN" that takes an Int "n" and returns a function that takes another Int and adds n to it
 // example usage:
 //      val addOne = addN(1)
 //      val three = addOne(2)
 
-
+fun addN(n: Int): (Int) -> Int {
+    return { it + n }
+}
 
 // 🧠 define a function "buildString" that takes as its argument a lambda with receiver type. It should provide the caller
 // access to an instance of the StringBuilder class to build up a string within the lambda and then return the result.
@@ -34,4 +42,8 @@ val add = TODO("define the lambda expression here")
 // This means the lambda can be invoked on instances of type A and that within the lambda the instance of A that it
 // was invoked on will be implicitly bound to "this". See the test case for example usage.
 
-
+fun buildString(build: StringBuilder.() -> Unit): String {
+    val builder = StringBuilder()
+    builder.build()
+    return builder.toString()
+}
