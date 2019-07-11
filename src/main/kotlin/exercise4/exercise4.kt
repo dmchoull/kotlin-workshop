@@ -11,7 +11,10 @@ package exercise4
 // predicate function returns true, or null if there is no such element.
 
 fun List<Any>.findAny(predicate: (Any) -> Boolean): Any? {
-    TODO("remove this and implement findAny")
+    for (item in this) {
+        if (predicate(item)) return item
+    }
+    return null
 }
 
 // Our second attempt at making a find function will use generic types to allow our function to be used on lists of any
@@ -29,7 +32,12 @@ fun <T> identity(thing: T): T {
 // 🧠 define a function "findGeneric", which for some generic type T, can be called on any List of T, takes a predicate
 // function that accepts an argument of type T, and returns a nullable T
 
-
+fun <T> List<T>.findGeneric(predicate: (T) -> Boolean): T? {
+    for (item in this) {
+        if (predicate(item)) return item
+    }
+    return null
+}
 
 // Maybe is a data type that represents the result of an operation that might fail. For example, attempting to extract
 // text from a web page given some CSS selector or find a specific element in a list may or may not succeed.
@@ -52,6 +60,22 @@ sealed class Maybe<T> {
     abstract fun <R> map(transform: (T) -> R): Maybe<R>
 }
 
-class Some<T>(private val value: T) : Maybe<T>()
+class Some<T>(private val value: T) : Maybe<T>() {
+    override fun getOrElse(defaultValue: T): T {
+        return value
+    }
 
-class None<T> : Maybe<T>()
+    override fun <R> map(transform: (T) -> R): Maybe<R> {
+        return Some(transform(value))
+    }
+}
+
+class None<T> : Maybe<T>() {
+    override fun getOrElse(defaultValue: T): T {
+        return defaultValue
+    }
+
+    override fun <R> map(transform: (T) -> R): Maybe<R> {
+        return None()
+    }
+}
