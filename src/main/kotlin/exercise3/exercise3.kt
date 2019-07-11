@@ -19,7 +19,7 @@ data class State(val todos: List<Todo>)
 //   * text of type String
 //   * done of type Boolean
 
-
+data class Todo(val id: Int, val text: String, val done: Boolean)
 
 // We have an abstract Action class and one currently supported action, AddTodo, for our todo app
 
@@ -29,7 +29,9 @@ data class AddTodo(val todo: Todo) : Action()
 
 // 🧠 add another Action sub-class DeleteTodo that has a read-only property "id" of type Int
 
+data class DeleteTodo(val id: Int) : Action()
 
+data class CompleteTodo(val id: Int) : Action()
 
 // 🧠 implement another case in the reduce function below to handle DeleteTodo
 // DeleteTodo should remove the Todo with the given id from the state
@@ -39,6 +41,13 @@ data class AddTodo(val todo: Todo) : Action()
 fun reduce(state: State, action: Action): State {
     return when (action) {
         is AddTodo -> state.copy(todos = state.todos + action.todo)
+
+        is DeleteTodo -> state.copy(todos = state.todos.filterNot { it.id == action.id })
+
+        is CompleteTodo -> {
+            val updatedTodos = state.todos.map { if (it.id == action.id) it.copy(done = true) else it }
+            return state.copy(todos = updatedTodos)
+        }
     }
 }
 
@@ -52,4 +61,8 @@ interface JsonSerializable {
     fun toJson(): String
 }
 
-class Person(val name: String, val age: Int)
+class Person(val name: String, val age: Int) : JsonSerializable {
+    override fun toJson(): String {
+        return """{"name":"$name","age":$age}"""
+    }
+}
